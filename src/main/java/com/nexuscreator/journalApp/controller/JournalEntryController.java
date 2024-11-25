@@ -33,6 +33,8 @@ public class JournalEntryController {
     }
     @PutMapping("id/{id}")
     public  JournalEntry updateJournalEntryById(@PathVariable Long id,  @RequestBody JournalEntry myEntry){
+        // Ensure the provided ID matches the one in the path variable
+        myEntry.setId(id);
         return  journalEntries.put(id, myEntry);
     }
 }

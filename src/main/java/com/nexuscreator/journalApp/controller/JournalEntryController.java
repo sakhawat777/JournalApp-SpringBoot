@@ -1,10 +1,7 @@
 package com.nexuscreator.journalApp.controller;
 
 import com.nexuscreator.journalApp.entity.JournalEntry;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,6 +16,10 @@ public class JournalEntryController {
 
     public List<JournalEntry> getAll() {
         return new ArrayList<>(journalEntries.values());
+    }
+    @GetMapping("id/{myId}")
+    public  JournalEntry getJournalEntryById(@PathVariable Long myId){
+    return journalEntries.get(myId);
     }
     @RequestMapping("/create")
     public  boolean createEntry(@RequestBody JournalEntry myEntry){

@@ -1,40 +1,48 @@
 package com.nexuscreator.journalApp.controller;
 
 import com.nexuscreator.journalApp.entity.JournalEntry;
+import com.nexuscreator.journalApp.service.JournalEntryService;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/journal")
 public class JournalEntryController {
-    private Map<Long, JournalEntry> journalEntries = new HashMap<>();
+    @Autowired
+    private JournalEntryService journalEntryService;
     @GetMapping("/abc")
 
     public List<JournalEntry> getAll() {
-        return new ArrayList<>(journalEntries.values());
+        return journalEntryService.getAll();
     }
     @GetMapping("id/{myId}")
-    public  JournalEntry getJournalEntryById(@PathVariable Long myId){
-    return journalEntries.get(myId);
+    public  JournalEntry getJournalEntryById(@PathVariable ObjectId myId){
+        return  journalEntryService.findById(myId).orElse(null);
     }
-    @RequestMapping("/create")
-    public  boolean createEntry(@RequestBody JournalEntry myEntry){
-        journalEntries.put(myEntry.getId(), myEntry);
-        return true;
+    @PostMapping("/create")
+    public  JournalEntry createEntry(@RequestBody JournalEntry myEntry){
+        myEntry.setDate(LocalDateTime.now());
+        journalEntryService.saveEntry((myEntry));
+        return myEntry;
 
     }
     @DeleteMapping("id/{myId}")
-    public  JournalEntry deleteJournalEntryById(@PathVariable Long myId){
-        return journalEntries.remove(myId);
+    public  boolean deleteJournalEntryById(@PathVariable ObjectId myId){
+        journalEntryService.deleteById(myId);
+        return true;
     }
     @PutMapping("id/{id}")
-    public  JournalEntry updateJournalEntryById(@PathVariable Long id,  @RequestBody JournalEntry myEntry){
-        // Ensure the provided ID matches the one in the path variable
-        myEntry.setId(id);
-        return  journalEntries.put(id, myEntry);
+    public  JournalEntry updateJournalEntryById(@PathVariable ObjectId id,  @RequestBody JournalEntry newEntry){
+        JournalEntry journalEntry = journalEntryService.findById(id).orElse(null);
+        if(journalEntry !=null){
+            journalEntry.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle() : journalEntry.getTitle());
+            journalEntry.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getTitle() : journalEntry.getTitle());
+        }
+        journalEntryService.saveEntry((journalEntry));
+        return journalEntry;
     }
 }

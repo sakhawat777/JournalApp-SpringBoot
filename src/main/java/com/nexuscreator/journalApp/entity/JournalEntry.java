@@ -1,14 +1,33 @@
 package com.nexuscreator.journalApp.entity;
 
+import org.bson.types.ObjectId;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
+import java.util.Date;
+
+@Document(collection="journal_entries") // Document mapping with MongoDb Collection
 public class JournalEntry {
-    private  long id;
+    @Id // primary key
+    private ObjectId id;
     private String title;
     private String content;
-    public long getId() {
+    private LocalDateTime date;
+
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
+    public void setId(ObjectId id) {
         this.id = id;
     }
 

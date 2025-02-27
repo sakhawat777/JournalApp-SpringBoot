@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -38,5 +39,9 @@ public class UserService {
 
     public Optional<User> getUserByUserName(String userName) {
         return userRepository.findByUserName(userName);
+    }
+
+    public List<User> getAll() {
+        return  userRepository.findAll();
     }
 }

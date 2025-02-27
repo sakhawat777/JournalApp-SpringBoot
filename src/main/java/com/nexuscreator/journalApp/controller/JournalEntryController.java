@@ -70,7 +70,7 @@ public class JournalEntryController {
     public  ResponseEntity<?> updateJournalEntryById(@PathVariable ObjectId id,  @RequestBody JournalEntry newEntry){
         JournalEntry journalEntry = journalEntryService.findById(id).orElse(null);
         if(journalEntry !=null){
-            journalEntry.setTitle(newEntry.getTitle() != null && !newEntry.getTitle().equals("") ? newEntry.getTitle() : journalEntry.getTitle());
+            journalEntry.setTitle(!newEntry.getTitle().equals("") ? newEntry.getTitle() : journalEntry.getTitle());
             journalEntry.setContent(newEntry.getContent() != null && !newEntry.getContent().equals("") ? newEntry.getContent() : journalEntry.getContent());
             journalEntryService.saveEntry((journalEntry));
             return new ResponseEntity<>(journalEntry, HttpStatus.OK);

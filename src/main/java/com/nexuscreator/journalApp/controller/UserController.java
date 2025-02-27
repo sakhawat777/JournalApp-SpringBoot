@@ -1,42 +1,29 @@
 package com.nexuscreator.journalApp.controller;
-import com.nexuscreator.journalApp.entity.JournalEntry;
+
 import com.nexuscreator.journalApp.entity.User;
-import com.nexuscreator.journalApp.service.JournalEntryService;
 import com.nexuscreator.journalApp.service.UserService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
+
     @Autowired
     private UserService userService;
-    @GetMapping("/all")
-    // ? Wild card pattern
-    public ResponseEntity<?> getAll() {
-        List<User> all = userService.getAll();
-        if(all != null && !all.isEmpty() ){
-            return new ResponseEntity<>(all, HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
 
     @PostMapping("/create")
-    public  ResponseEntity<User> createEntry(@RequestBody User user){
+    public ResponseEntity<?> createUser(@RequestBody User user) {
         try {
-            userService.saveEntry((user));
-            return new ResponseEntity<>(user, HttpStatus.CREATED);
+            User savedUser = userService.saveUser(user);
+            return new ResponseEntity<>(savedUser, HttpStatus.CREATED); // ✅ 201 Created
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT); // ✅ 409 Conflict
         }
-        catch (Exception e){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
     }
-
 }

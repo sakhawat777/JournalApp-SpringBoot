@@ -21,6 +21,19 @@ public class UserController {
     @GetMapping("/all") public List<User> getAllUsers(){
         return  userService.getAll();
     }
+
+    // ✅ Get user by username
+    @GetMapping("/{userName}")
+    public ResponseEntity<?> getUserByUserName(@PathVariable String userName) {
+        Optional<User> user = userService.getUserByUserName(userName);
+
+        if (user.isPresent()) {
+            return ResponseEntity.ok(user.get()); // ✅ Return User object with 200 OK
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found"); // ✅ Return String message with 404
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<?> createUser(@RequestBody User user) {
         try {

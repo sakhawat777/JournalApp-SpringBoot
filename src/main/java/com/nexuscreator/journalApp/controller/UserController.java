@@ -43,4 +43,29 @@ public class UserController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT); // ✅ 409 Conflict
         }
     }
+
+    // ✅ Update user by username
+    @PutMapping("/{userName}")
+    public ResponseEntity<?> updateUser(@PathVariable String userName, @RequestBody User user) {
+        Optional<User> optionalUser = userService.getUserByUserName(userName);
+
+        if (!optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+
+        User userInDb = optionalUser.get();
+
+        // Update only provided fields
+        if (user.getUserName() != null && !user.getUserName().isEmpty()) {
+            userInDb.setUserName(user.getUserName()); // Ensure username update is intentional
+        }
+
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            userInDb.setPassword(user.getPassword());
+        }
+
+        User updatedUser = userService.saveUser(userInDb);
+        return ResponseEntity.ok(updatedUser);
+    }
+
 }
